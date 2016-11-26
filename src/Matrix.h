@@ -7,11 +7,13 @@
 template<class T>
 class Matrix {
 public:
-    virtual int at(int row, int col) const = 0;
+    virtual T& at(int row, int col) const = 0;
 
     virtual int rows() const = 0;
 
     virtual int cols() const = 0;
+
+    virtual Matrix<T>* clone() = 0;
 };
 
 template<class T>
@@ -47,9 +49,28 @@ public:
         return _cols;
     }
 
-    T at(int row, int col) const {
+    T& at(int row, int col) const {
         return _data[(row - 1) * _rows + (col - 1)];
     }
+
+    static Matrix<int>* eye(int size) {
+        Matrix<T>* m = zeros(size);
+        for (int i = 1; i <= size; ++i) {
+            m->at(i, i) = 1;
+        }
+        return m;
+    }
+
+    Matrix<T>* clone() {
+        Matrix<T>* c = zeros(rows(), cols());
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                c->at(i, j) = at(i, j);
+            }
+        }
+        return c;
+    }
+
 };
 
 #endif

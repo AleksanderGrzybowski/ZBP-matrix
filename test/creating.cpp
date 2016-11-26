@@ -28,3 +28,31 @@ TEST_CASE("Creating: invalid dimensions") {
     REQUIRE_THROWS(DataMatrix<int>::zeros(0, -1));
     REQUIRE_THROWS(DataMatrix<int>::zeros(-2));
 }
+
+TEST_CASE("Creating: eye") {
+    Matrix<int>* m = DataMatrix<int>::eye(3);
+
+    for (int i = 1; i <= 3; ++i) {
+        for (int j = 1; j <= 4; ++j) {
+            REQUIRE(m->at(i, j) == (i == j ? 1 : 0));
+        }
+    }
+}
+
+TEST_CASE("Creating: clone") {
+    Matrix<int>* m = DataMatrix<int>::zeros(2);
+
+    m->at(1, 1) = 101;
+    m->at(1, 2) = 102;
+    m->at(2, 1) = 103;
+    m->at(2, 2) = 104;
+
+    Matrix<int>* cloned = m->clone();
+
+    REQUIRE(cloned->rows() == m->rows());
+    REQUIRE(cloned->cols() == m->cols());
+    REQUIRE(cloned->at(1,1) == 101);
+    REQUIRE(cloned->at(1,2) == 102);
+    REQUIRE(cloned->at(2,1) == 103);
+    REQUIRE(cloned->at(2,2) == 104);
+}
