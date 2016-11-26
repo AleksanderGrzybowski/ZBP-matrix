@@ -3,6 +3,8 @@
 
 #include <stdexcept>
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 template<class T>
 class Matrix {
@@ -14,6 +16,8 @@ public:
     virtual int cols() const = 0;
 
     virtual Matrix<T>* clone() = 0;
+
+    virtual std::string to_string() const = 0;
 };
 
 template<class T>
@@ -71,6 +75,18 @@ public:
         return c;
     }
 
+    std::string to_string() const {
+        std::stringstream output;
+        output << "[\n";
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                output << std::setfill(' ') << std::setw(5) << at(i, j) << ", ";
+            }
+            output << "\n";
+        }
+        output << "]\n";
+        return output.str();
+    }
 };
 
 #endif

@@ -1,10 +1,10 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedImportStatement"
 #include <iostream>
 #include "../src/Matrix.h"
 
 
 int main() {
-    Matrix m;
-    std::cout << m.test_value << std::endl;
-
     return 0;
 }
+#pragma clang diagnostic pop
