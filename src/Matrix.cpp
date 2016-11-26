@@ -1,5 +1,4 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedImportStatement"
 #include "Matrix.h"
-
-Matrix::Matrix() : test_value(42) {
-
-}
+#pragma clang diagnostic pop
