@@ -34,6 +34,17 @@ private:
 
 public:
 
+    DataMatrix(Matrix<T>& other) {
+        _rows = other.rows();
+        _cols = other.cols();
+        _data = new T[_rows * _cols];
+        for (int i = 1; i <= other.rows(); ++i) {
+            for (int j = 1; j <= other.cols(); ++j) {
+                at(i, j) = other.at(i, j);
+            }
+        }
+    }
+
     int rows() const {
         return _rows;
     }

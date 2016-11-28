@@ -56,3 +56,14 @@ TEST_CASE("Creating: clone") {
     REQUIRE(cloned->at(2,1) == 103);
     REQUIRE(cloned->at(2,2) == 104);
 }
+
+TEST_CASE("Copy constructor") {
+    Matrix<int>* m = DataMatrix<int>::eye(2);
+    DataMatrix<int> copied(*m);
+
+    REQUIRE(copied.at(1,1) == 1);
+    REQUIRE(copied.at(1,2) == 0);
+    REQUIRE(copied.at(2,1) == 0);
+    REQUIRE(copied.at(2,2) == 1);
+
+}
