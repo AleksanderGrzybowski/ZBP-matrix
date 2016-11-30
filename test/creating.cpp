@@ -66,3 +66,8 @@ TEST_CASE("Copy constructor") {
     REQUIRE(copied.at(2,1) == 0);
     REQUIRE(copied.at(2,2) == 1);
 }
+
+// Just to shut up CLion saying 'method is not used'
+TEST_CASE("to_string") {
+    Matrix<int>::eye(2).to_string();
+}
