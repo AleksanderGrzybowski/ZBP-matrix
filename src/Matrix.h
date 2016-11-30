@@ -14,8 +14,7 @@ private:
     T* _data;
 
     Matrix(int rows, int cols) : _rows(rows), _cols(cols) {
-        _data = new T[rows * cols];
-        memset(_data, 0, sizeof(T) * (rows * cols)); // why this is required?
+        _data = new T[rows * cols]();
     }
 
 public:
