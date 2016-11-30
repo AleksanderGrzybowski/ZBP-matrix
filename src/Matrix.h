@@ -19,12 +19,10 @@ private:
 
 public:
 
-    Matrix(const Matrix<T>& other) {
-        _rows = other.rows();
-        _cols = other.cols();
+    Matrix(const Matrix<T>& other) : _rows(other.rows()), _cols(other.cols()) {
         _data = new T[_rows * _cols];
-        for (int i = 1; i <= other.rows(); ++i) {
-            for (int j = 1; j <= other.cols(); ++j) {
+        for (int i = 1; i <= _rows; ++i) {
+            for (int j = 1; j <= _cols; ++j) {
                 at(i, j) = other.at(i, j);
             }
         }
@@ -32,6 +30,14 @@ public:
 
     int rows() const {
         return _rows;
+    }
+
+    int cols() const {
+        return _cols;
+    }
+
+    T& at(int row, int col) const {
+        return _data[(row - 1) * _rows + (col - 1)];
     }
 
     static Matrix<T> zeros(int rows, int cols) {
@@ -45,30 +51,22 @@ public:
         return zeros(size, size);
     }
 
-    int cols() const {
-        return _cols;
-    }
-
-    T& at(int row, int col) const {
-        return _data[(row - 1) * _rows + (col - 1)];
-    }
-
     static Matrix<int> eye(int size) {
-        Matrix<T> m = zeros(size);
+        Matrix<T> identity = zeros(size);
         for (int i = 1; i <= size; ++i) {
-            m.at(i, i) = 1;
+            identity.at(i, i) = 1;
         }
-        return m;
+        return identity;
     }
 
     Matrix<T> clone() {
-        Matrix<T> c = zeros(rows(), cols());
+        Matrix<T> cloned = zeros(rows(), cols());
         for (int i = 1; i <= rows(); ++i) {
             for (int j = 1; j <= cols(); ++j) {
-                c.at(i, j) = at(i, j);
+                cloned.at(i, j) = at(i, j);
             }
         }
-        return c;
+        return cloned;
     }
 
     std::string to_string() const {
@@ -85,9 +83,9 @@ public:
     }
 
     Matrix<T> operator+(const Matrix& other) const {
-        Matrix<int> sum = *this;
-        sum += other;
-        return sum;
+        Matrix<int> result = *this;
+        result += other;
+        return result;
     }
 
     Matrix<T> operator*(T factor) const {
@@ -102,7 +100,7 @@ public:
         }
         for (int i = 1; i <= rows(); ++i) {
             for (int j = 1; j <= cols(); ++j) {
-                at(i,j) += other.at(i, j);
+                at(i, j) += other.at(i, j);
             }
         }
         return *this;
@@ -111,7 +109,7 @@ public:
     Matrix<T>& operator*=(T factor) {
         for (int i = 1; i <= rows(); ++i) {
             for (int j = 1; j <= cols(); ++j) {
-                at(i,j) *= factor;
+                at(i, j) *= factor;
             }
         }
         return *this;

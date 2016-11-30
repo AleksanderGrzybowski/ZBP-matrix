@@ -51,20 +51,20 @@ TEST_CASE("Creating: clone") {
 
     REQUIRE(cloned.rows() == m.rows());
     REQUIRE(cloned.cols() == m.cols());
-    REQUIRE(cloned.at(1,1) == 101);
-    REQUIRE(cloned.at(1,2) == 102);
-    REQUIRE(cloned.at(2,1) == 103);
-    REQUIRE(cloned.at(2,2) == 104);
+    REQUIRE(cloned.at(1, 1) == 101);
+    REQUIRE(cloned.at(1, 2) == 102);
+    REQUIRE(cloned.at(2, 1) == 103);
+    REQUIRE(cloned.at(2, 2) == 104);
 }
 
 TEST_CASE("Copy constructor") {
     Matrix<int> m = Matrix<int>::eye(2);
     Matrix<int> copied(m);
 
-    REQUIRE(copied.at(1,1) == 1);
-    REQUIRE(copied.at(1,2) == 0);
-    REQUIRE(copied.at(2,1) == 0);
-    REQUIRE(copied.at(2,2) == 1);
+    REQUIRE(copied.at(1, 1) == 1);
+    REQUIRE(copied.at(1, 2) == 0);
+    REQUIRE(copied.at(2, 1) == 0);
+    REQUIRE(copied.at(2, 2) == 1);
 }
 
 // Just to shut up CLion saying 'method is not used'

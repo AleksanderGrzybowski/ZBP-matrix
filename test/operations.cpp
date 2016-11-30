@@ -25,11 +25,11 @@ TEST_CASE("Operations: +") {
     Matrix<int> a = make1234();
     Matrix<int> b = make5678();
 
-    Matrix<int> sum = a + b;
-    REQUIRE(sum.at(1, 1) == 6);
-    REQUIRE(sum.at(1, 2) == 8);
-    REQUIRE(sum.at(2, 1) == 10);
-    REQUIRE(sum.at(2, 2) == 12);
+    Matrix<int> result = a + b;
+    REQUIRE(result.at(1, 1) == 6);
+    REQUIRE(result.at(1, 2) == 8);
+    REQUIRE(result.at(2, 1) == 10);
+    REQUIRE(result.at(2, 2) == 12);
 }
 
 TEST_CASE("Operations: + should throw if incompatible dims") {
@@ -40,11 +40,11 @@ TEST_CASE("Operations: -") {
     Matrix<int> a = make1234();
     Matrix<int> b = make5678();
 
-    Matrix<int> diff = a - b;
-    REQUIRE(diff.at(1, 1) == -4);
-    REQUIRE(diff.at(1, 2) == -4);
-    REQUIRE(diff.at(2, 1) == -4);
-    REQUIRE(diff.at(2, 2) == -4);
+    Matrix<int> result = a - b;
+    REQUIRE(result.at(1, 1) == -4);
+    REQUIRE(result.at(1, 2) == -4);
+    REQUIRE(result.at(2, 1) == -4);
+    REQUIRE(result.at(2, 2) == -4);
 }
 
 TEST_CASE("Operations: - should throw if incompatible dims") {
