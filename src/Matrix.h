@@ -84,6 +84,50 @@ public:
         output << "]\n";
         return output.str();
     }
+
+    Matrix<T> operator+(const Matrix& other) const {
+        Matrix<int> sum = *this;
+        sum += other;
+        return sum;
+    }
+
+    Matrix<T> operator*(T factor) const {
+        Matrix<int> result = *this;
+        result *= factor;
+        return result;
+    }
+
+    Matrix<T>& operator+=(const Matrix& other) {
+        if (!(other.rows() == rows() && other.cols() == cols())) {
+            throw std::runtime_error("Incompatible dimensions");
+        }
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                at(i,j) += other.at(i, j);
+            }
+        }
+        return *this;
+    }
+
+    Matrix<T>& operator*=(T factor) {
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                at(i,j) *= factor;
+            }
+        }
+        return *this;
+    }
+
+    Matrix<T> operator-(const Matrix& other) const {
+        Matrix<T> result = *this;
+        result += other * -1;
+        return result;
+    }
+
+    Matrix<T>& operator-=(const Matrix& other) {
+        *this += other * (-1);
+        return *this;
+    }
 };
 
 #endif
