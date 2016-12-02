@@ -67,6 +67,18 @@ TEST_CASE("Copy constructor") {
     REQUIRE(copied.at(2, 2) == 1);
 }
 
+TEST_CASE("Should throw on invalid access") {
+    Matrix<int> m = Matrix<int>::eye(2);
+
+    REQUIRE_THROWS(m.at(-1, -1));
+    REQUIRE_THROWS(m.at(0, 0));
+    REQUIRE_THROWS(m.at(0, 1));
+    REQUIRE_THROWS(m.at(1, 0));
+    REQUIRE_THROWS(m.at(2, 3));
+    REQUIRE_THROWS(m.at(3, 2));
+    REQUIRE_THROWS(m.at(3, 3));
+}
+
 // Just to shut up CLion saying 'method is not used'
 TEST_CASE("to_string") {
     Matrix<int>::eye(2).to_string();

@@ -10,34 +10,73 @@ template<class T>
 class Matrix {
 private:
 
+    // when not a view - real data structure with pointer to elements
     int _rows, _cols;
     T* _data;
 
-    Matrix(int rows, int cols) : _rows(rows), _cols(cols) {
-        _data = new T[rows * cols]();
-    }
+    // when view
+    Matrix<T>* parent;
+    int from_row, from_col, to_row, to_col;
+
+    Matrix(int rows, int cols) : _rows(rows), _cols(cols), parent(nullptr), _data(new T[rows * cols]()) {}
+
+    Matrix(Matrix<T>& parent, int from_row, int from_col, int to_row, int to_col)
+            : from_row(from_row), from_col(from_col), to_row(to_row), to_col(to_col), parent(&parent) {}
 
 public:
 
-    Matrix(const Matrix<T>& other) : _rows(other.rows()), _cols(other.cols()) {
-        _data = new T[_rows * _cols];
-        for (int i = 1; i <= _rows; ++i) {
-            for (int j = 1; j <= _cols; ++j) {
-                at(i, j) = other.at(i, j);
+    Matrix(const Matrix<T>& other) {
+        if (other.parent == nullptr) {
+            parent = nullptr;
+            _rows = other.rows();
+            _cols = other.cols();
+            _data = new T[_rows * _cols];
+            for (int i = 1; i <= _rows; ++i) {
+                for (int j = 1; j <= _cols; ++j) {
+                    at(i, j) = other.at(i, j);
+                }
             }
+        } else {
+            parent = other.parent;
+            from_row = other.from_row;
+            from_col = other.from_col;
+            to_row = other.to_row;
+            to_col = other.to_col;
         }
     }
 
     int rows() const {
-        return _rows;
+        return parent != nullptr ? (to_row - from_row + 1) : _rows;
     }
 
     int cols() const {
-        return _cols;
+        return parent != nullptr ? (to_col - from_col + 1) : _cols;
     }
 
     T& at(int row, int col) const {
-        return _data[(row - 1) * _rows + (col - 1)];
+        if (row <= 0 || col <= 0) {
+            throw std::runtime_error("Invalid element access");
+        }
+
+        if (parent != nullptr) {
+            return parent->at(row + from_row - 1, col + from_col - 1);
+        } else {
+            if (row > _rows || col > _cols) {
+                throw std::runtime_error("Invalid element access");
+            }
+            return _data[(row - 1) * _rows + (col - 1)];
+        }
+    }
+
+    Matrix<T> view(int from_row, int from_col, int to_row, int to_col) {
+        bool min_check = from_row >= 1 && to_row >= 1 && from_col >= 1 && to_col >= 1;
+        bool max_check = from_row <= rows() && to_row <= rows() && from_col <= cols() && to_col <= cols();
+        bool overlap_check = from_row <= to_row && from_col <= to_col;
+        if (!(min_check && max_check && overlap_check)) {
+            throw new std::runtime_error("Invalid view indices");
+        }
+
+        return Matrix(*this, from_row, from_col, to_row, to_col);
     }
 
     static Matrix<T> zeros(int rows, int cols) {

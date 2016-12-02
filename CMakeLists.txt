@@ -11,6 +11,6 @@ add_library(Matrix ${LIB_SOURCES} ${LIB_HEADERS})
 add_executable(scratch scratch/main.cpp)
 target_link_libraries(scratch Matrix)
 
-add_executable(unittest test/catch.hpp test/framework.cpp test/creating.cpp test/operations.cpp)
+add_executable(unittest test/catch.hpp test/framework.cpp test/creating.cpp test/operations.cpp test/views.cpp)
 target_link_libraries(unittest Matrix)
 
