@@ -180,14 +180,15 @@ public:
     class matrix_iterator {
     public:
 
-        matrix_iterator(const Matrix& mat) : subject(mat), cur_row(1), cur_col(1) {}
+        matrix_iterator(const Matrix& mat, int cur_row, int cur_col) : subject(mat), cur_row(cur_row),
+                                                                       cur_col(cur_col) {}
 
         matrix_iterator(const matrix_iterator& other) : subject(other.subject), cur_row(other.cur_row),
                                                         cur_col(other.cur_col) {}
 
         matrix_iterator operator++() { // ++x
-            if (cur_row == subject.rows() && cur_col == subject.cols()) {
-                return *this;
+            if (cur_row == subject.rows() + 1) { // exhausted
+                throw new std::runtime_error("Cannot go past the end of iterator");
             }
 
             if (cur_col == subject.cols()) {
@@ -199,6 +200,13 @@ public:
             return *this;
         }
 
+        bool operator==(const matrix_iterator& other) const {
+            return cur_row == other.cur_row && cur_col == other.cur_col && (&other.subject == &subject);
+        }
+        bool operator!=(const matrix_iterator& other) const {
+            return !(other == *this);
+        }
+
         T& operator*() { return subject.at(cur_row, cur_col); }
 
     private:
@@ -207,7 +215,11 @@ public:
     };
 
     matrix_iterator begin() {
-        return matrix_iterator(*this);
+        return matrix_iterator(*this, 1, 1);
+    }
+
+    matrix_iterator end() {
+        return matrix_iterator(*this, rows() + 1, 1);
     }
 };
 
