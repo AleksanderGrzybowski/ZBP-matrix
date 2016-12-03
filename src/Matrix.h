@@ -98,6 +98,18 @@ public:
         return identity;
     }
 
+    // primarily for testing, but useful anyway
+    static Matrix<int> natural(int rows, int cols) {
+        Matrix<T> nat = zeros(rows, cols);
+
+        for (int i = 1; i <= nat.rows(); ++i) {
+            for (int j = 1; j <= nat.cols(); ++j) {
+                nat.at(i, j) = j + (i - 1) * nat.cols();
+            }
+        }
+        return nat;
+    }
+
     Matrix<T> clone() {
         Matrix<T> cloned = zeros(rows(), cols());
         for (int i = 1; i <= rows(); ++i) {
@@ -163,6 +175,39 @@ public:
     Matrix<T>& operator-=(const Matrix& other) {
         *this += other * (-1);
         return *this;
+    }
+
+    class matrix_iterator {
+    public:
+
+        matrix_iterator(const Matrix& mat) : subject(mat), cur_row(1), cur_col(1) {}
+
+        matrix_iterator(const matrix_iterator& other) : subject(other.subject), cur_row(other.cur_row),
+                                                        cur_col(other.cur_col) {}
+
+        matrix_iterator operator++() { // ++x
+            if (cur_row == subject.rows() && cur_col == subject.cols()) {
+                return *this;
+            }
+
+            if (cur_col == subject.cols()) {
+                cur_row++;
+                cur_col = 1;
+            } else {
+                cur_col++;
+            }
+            return *this;
+        }
+
+        T& operator*() { return subject.at(cur_row, cur_col); }
+
+    private:
+        const Matrix& subject;
+        int cur_row, cur_col;
+    };
+
+    matrix_iterator begin() {
+        return matrix_iterator(*this);
     }
 };
 

@@ -2,15 +2,6 @@
 
 #include "../src/Matrix.h"
 
-Matrix<int> make1234() {
-    Matrix<int> a = Matrix<int>::eye(2);
-    a.at(1, 1) = 1;
-    a.at(1, 2) = 2;
-    a.at(2, 1) = 3;
-    a.at(2, 2) = 4;
-    return a;
-}
-
 Matrix<int> make5678() {
     Matrix<int> a = Matrix<int>::eye(2);
     a.at(1, 1) = 5;
@@ -22,7 +13,7 @@ Matrix<int> make5678() {
 
 
 TEST_CASE("Operations: +") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
     Matrix<int> b = make5678();
 
     Matrix<int> result = a + b;
@@ -37,7 +28,7 @@ TEST_CASE("Operations: + should throw if incompatible dims") {
 }
 
 TEST_CASE("Operations: -") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
     Matrix<int> b = make5678();
 
     Matrix<int> result = a - b;
@@ -52,7 +43,7 @@ TEST_CASE("Operations: - should throw if incompatible dims") {
 }
 
 TEST_CASE("Operations: +=") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
     Matrix<int> b = make5678();
 
     a += b;
@@ -67,7 +58,7 @@ TEST_CASE("Operations: += should throw if incompatible dims") {
 }
 
 TEST_CASE("Operations: -=") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
     Matrix<int> b = make5678();
 
     a -= b;
@@ -82,7 +73,7 @@ TEST_CASE("Operations: -= should throw if incompatible dims") {
 }
 
 TEST_CASE("Operations: *=") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
 
     a *= 10;
     REQUIRE(a.at(1, 1) == 10);
@@ -92,7 +83,7 @@ TEST_CASE("Operations: *=") {
 }
 
 TEST_CASE("Operations: *") {
-    Matrix<int> a = make1234();
+    Matrix<int> a = Matrix<int>::natural(2,2);
 
     Matrix<int> result = a * 10;
     REQUIRE(result.at(1, 1) == 10);
