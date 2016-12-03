@@ -79,6 +79,13 @@ TEST_CASE("Should throw on invalid access") {
     REQUIRE_THROWS(m.at(3, 3));
 }
 
+TEST_CASE("Fix bug with wrong indexing") {
+    Matrix<int> m = Matrix<int>::zeros(2, 3);
+
+    m.at(1, 3) = 42;
+    REQUIRE(m.at(2,1) != 42);
+}
+
 // Just to shut up CLion saying 'method is not used'
 TEST_CASE("to_string") {
     Matrix<int>::eye(2).to_string();

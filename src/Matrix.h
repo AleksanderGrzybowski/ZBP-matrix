@@ -64,7 +64,7 @@ public:
             if (row > _rows || col > _cols) {
                 throw std::runtime_error("Invalid element access");
             }
-            return _data[(row - 1) * _rows + (col - 1)];
+            return _data[(row - 1) * _cols + (col - 1)];
         }
     }
 
