@@ -8,21 +8,6 @@
 
 template<class T>
 class Matrix {
-private:
-
-    // when not a view - real data structure with pointer to elements
-    int _rows, _cols;
-    T* _data;
-
-    // when view
-    Matrix<T>* parent;
-    int from_row, from_col, to_row, to_col;
-
-    Matrix(int rows, int cols) : _rows(rows), _cols(cols), parent(nullptr), _data(new T[rows * cols]()) {}
-
-    Matrix(Matrix<T>& parent, int from_row, int from_col, int to_row, int to_col)
-            : from_row(from_row), from_col(from_col), to_row(to_row), to_col(to_col), parent(&parent) {}
-
 public:
 
     Matrix(const Matrix<T>& other) {
@@ -203,6 +188,7 @@ public:
         bool operator==(const matrix_iterator& other) const {
             return cur_row == other.cur_row && cur_col == other.cur_col && (&other.subject == &subject);
         }
+
         bool operator!=(const matrix_iterator& other) const {
             return !(other == *this);
         }
@@ -214,13 +200,61 @@ public:
         int cur_row, cur_col;
     };
 
-    matrix_iterator begin() {
+    matrix_iterator begin() const {
         return matrix_iterator(*this, 1, 1);
     }
 
-    matrix_iterator end() {
+    matrix_iterator end() const {
         return matrix_iterator(*this, rows() + 1, 1);
     }
+
+    Matrix<T> operator*(Matrix<T>& second) {
+        if (cols() != second.rows()) {
+            throw std::runtime_error("Cannot multiply, invalid dimensions");
+        }
+
+        Matrix<T> result = Matrix<T>::zeros(rows(), second.cols());
+
+        for (int i = 1; i <= result.rows(); ++i) {
+            for (int j = 1; j <= result.cols(); ++j) {
+                result.at(i, j) = view(i, 1, i, cols()).dot_product(second.view(1, j, second.rows(), j));
+            }
+        }
+
+        return result;
+    }
+
+private:
+
+    // when not a view - real data structure with pointer to elements
+    int _rows, _cols;
+    T* _data;
+
+    // when view
+    Matrix<T>* parent;
+    int from_row, from_col, to_row, to_col;
+
+    Matrix(int rows, int cols) : _rows(rows), _cols(cols), parent(nullptr), _data(new T[rows * cols]()) {}
+
+    Matrix(Matrix<T>& parent, int from_row, int from_col, int to_row, int to_col)
+            : from_row(from_row), from_col(from_col), to_row(to_row), to_col(to_col), parent(&parent) {}
+
+
+    T dot_product(const Matrix<T>& second) {
+        matrix_iterator it_first = begin();
+        matrix_iterator it_second = second.begin();
+
+        T result = 0;
+
+        while (it_first != end()) {
+            result += (*it_first) * (*it_second);
+            ++it_first;
+            ++it_second;
+        }
+
+        return result;
+    }
 };
+
 
 #endif
