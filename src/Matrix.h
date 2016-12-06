@@ -258,6 +258,41 @@ public:
         }
     }
 
+    Matrix remove_intersection(int row, int col) const {
+        if (!(row >= 1 && row <= rows() && col >= 1 && col <= cols())) {
+            throw std::runtime_error("Nonexistent center element to remove intersection");
+        }
+
+        if (cols() == 1 || rows() == 1) {
+            throw std::runtime_error("Cannot remove intersection from 1x1 matrix");
+        }
+
+        // TODO: try to refactor this using views :)
+        Matrix<T> result = Matrix<T>::zeros(cols() - 1, rows() - 1);
+        for (int i = 1; i <= rows() - 1; ++i) {
+            for (int j = 1; j <= cols() - 1; ++j) {
+                result.at(i, j) = at(i >= row ? (i + 1) : i, j >= col ? (j + 1) : j);
+            }
+        }
+        return result;
+    }
+
+    T det() const {
+        if (rows() != cols()) {
+            throw std::runtime_error("Cannot calculate determinant of non-square matrix");
+        }
+
+        if (rows() == 1) {
+            return at(1, 1);
+        } else {
+            T result = 0;
+            for (int j = 1; j <= cols(); ++j) {
+                result += ((j % 2 == 1) ? 1 : -1) * at(1, j) * remove_intersection(1, j).det();
+            }
+            return result;
+        }
+    }
+
 private:
 
     // when not a view - real data structure with pointer to elements

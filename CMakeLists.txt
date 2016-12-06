@@ -19,6 +19,7 @@ add_executable(unittest
         test/views.cpp
         test/iterator.cpp
         test/put.cpp
+        test/det.cpp
 )
 target_link_libraries(unittest Matrix)
 
