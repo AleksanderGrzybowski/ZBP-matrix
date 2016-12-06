@@ -208,6 +208,25 @@ public:
         return matrix_iterator(*this, rows() + 1, 1);
     }
 
+    bool operator==(const Matrix& other) const {
+        if (!(rows() == other.rows() && cols() == other.cols())) {
+            return false;
+        }
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                if (at(i, j) != other.at(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool operator!=(const Matrix& other) const {
+        return !(*this == other);
+    }
+
+
     Matrix<T> operator*(Matrix<T>& second) {
         if (cols() != second.rows()) {
             throw std::runtime_error("Cannot multiply, invalid dimensions");

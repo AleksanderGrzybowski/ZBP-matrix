@@ -11,6 +11,23 @@ Matrix<int> make5678() {
     return a;
 }
 
+TEST_CASE("Operations: == and !=, matrices of different dimensions are not equal") {
+    Matrix<int> a = Matrix<int>::eye(2);
+    Matrix<int> b = Matrix<int>::eye(3);
+
+    REQUIRE(a != b);
+}
+
+TEST_CASE("Operations: == and !=, matrices are equal when they have the same dimensions and elements") {
+    Matrix<int> a = Matrix<int>::eye(2);
+    Matrix<int> b_equal = Matrix<int>::eye(2);
+    Matrix<int> b_changed = Matrix<int>::eye(2);
+    b_changed.at(1,1) = 42;
+
+    REQUIRE(a == b_equal);
+    REQUIRE(a != b_changed);
+}
+
 
 TEST_CASE("Operations: +") {
     Matrix<int> a = Matrix<int>::natural(2, 2);
