@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 template<class T>
 class Matrix {
@@ -241,6 +242,20 @@ public:
         }
 
         return result;
+    }
+
+    void put(const Matrix& src, int row, int col) {
+        bool size_check = row >= 1 && row <= rows() && col >= 1 && col <= cols();
+        bool bounds_check = (row + src.rows() - 1 <= rows()) && (col + src.cols() - 1 <= cols());
+        if (!(size_check && bounds_check)) {
+            throw std::runtime_error("Invalid position to put matrix");
+        }
+
+        for (int i = 1; i <= src.rows(); ++i) {
+            for (int j = 1; j <= src.cols(); ++j) {
+                at(i + row - 1, j + col - 1) = src.at(i, j);
+            }
+        }
     }
 
 private:
