@@ -103,6 +103,30 @@ public:
         }
     }
 
+    Matrix concat_horizontal(const Matrix& right) {
+        if (rows() != right.rows()) {
+            throw std::runtime_error("Cannot concat matrices, nonmatching dimensions");
+        }
+
+        Matrix<T> result = zeros(rows(), cols() + right.cols());
+        result.put(*this, 1, 1);
+        result.put(right, 1, cols() + 1);
+
+        return result;
+    }
+
+    Matrix concat_vertical(const Matrix& bottom) {
+        if (cols() != bottom.cols()) {
+            throw std::runtime_error("Cannot concat matrices, nonmatching dimensions");
+        }
+
+        Matrix<T> result = zeros(rows() + bottom.rows(), cols());
+        result.put(*this, 1, 1);
+        result.put(bottom, rows() + 1, 1);
+
+        return result;
+    }
+
     Matrix<T>& operator+=(const Matrix& other) {
         if (!(other.rows() == rows() && other.cols() == cols())) {
             throw std::runtime_error("Incompatible dimensions");
