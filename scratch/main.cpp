@@ -9,6 +9,7 @@ using namespace std;
 void header(const string& text) {
     unsigned long top_length = text.size() + 4;
 
+    cout << endl << endl;
     for (int i = 0; i < top_length; ++i) {
         cout << "*";
     }
@@ -125,6 +126,11 @@ int main() {
     matrix.at(6, 6) = 8;
     cout << matrix.to_string() << endl;
     cout << "Is " << matrix.det() << endl;
+
+    header("Concatenating matrices");
+    Matrix<int> sample = Matrix<int>::natural(3, 3);
+    cout << (sample.concat_horizontal(sample)).to_string() << endl;
+    cout << (sample.concat_vertical(sample)).to_string() << endl;
 }
 
 #pragma clang diagnostic pop
