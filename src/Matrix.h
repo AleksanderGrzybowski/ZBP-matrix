@@ -228,6 +228,11 @@ public:
         }
     }
 
+    Matrix(Matrix&& rvalue) {
+        _data = rvalue._data;
+        rvalue._data = nullptr;
+    }
+
     Matrix(const Matrix<T>& other) {
         if (other.parent == nullptr) {
             parent = nullptr;
