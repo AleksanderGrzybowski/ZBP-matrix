@@ -300,3 +300,39 @@ TEST_CASE("Should throw if matrix is non-invertible (det=0)") {
     REQUIRE_THROWS(notInvertible.inverse());
 }
 
+
+TEST_CASE("Should solve a system with 1 equation: 5x = 10") {
+    Matrix<double> a = Matrix<double>::zeros(1, 1);
+    a.at(1, 1) = 5;
+    Matrix<double> b = Matrix<double>::zeros(1, 1);
+    b.at(1, 1) = 10;
+
+    Matrix<double> x = Matrix<double>::solve(a, b);
+
+    REQUIRE(x.rows() == 1);
+    REQUIRE(x.cols() == 1);
+    REQUIRE(x.at(1, 1) == Approx(2));
+}
+
+TEST_CASE("Should solve a system with 2 equations: 2x+3y=7 and 3x+4y=11") {
+    Matrix<double> a = Matrix<double>::zeros(2, 2);
+    a.at(1, 1) = 2;
+    a.at(1, 2) = 3;
+    a.at(2, 1) = 3;
+    a.at(2, 2) = 4;
+    Matrix<double> b = Matrix<double>::zeros(2, 1);
+    b.at(1, 1) = 8;
+    b.at(2, 1) = 11;
+
+    Matrix<double> x = Matrix<double>::solve(a, b);
+
+    REQUIRE(x.rows() == 2);
+    REQUIRE(x.cols() == 1);
+    REQUIRE(x.at(1, 1) == Approx(1));
+    REQUIRE(x.at(2, 1) == Approx(2));
+}
+
+TEST_CASE("Should not attempt to solve if dimensions are invalid") {
+    REQUIRE_THROWS(Matrix<int>::solve(Matrix<int>::zeros(2, 3), Matrix<int>::zeros(1, 2)));
+    REQUIRE_THROWS(Matrix<int>::solve(Matrix<int>::zeros(2, 2), Matrix<int>::zeros(1, 3)));
+}

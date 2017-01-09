@@ -138,9 +138,20 @@ int main() {
     cout << x.transpose().to_string() << endl;
 
     header("Inverting matrices");
-    Matrix<int> first = Matrix<int>::natural(2,2);
+    Matrix<int> first = Matrix<int>::natural(2, 2);
     cout << first.to_string() << endl;
     cout << first.inverse().to_string() << endl;
+
+    header("Linear equation system: 2x+3y=7 and 3x+4y=11");
+    Matrix<double> linA = Matrix<double>::zeros(2, 2);
+    linA.at(1, 1) = 2;
+    linA.at(1, 2) = 3;
+    linA.at(2, 1) = 3;
+    linA.at(2, 2) = 4;
+    Matrix<double> linB = Matrix<double>::zeros(2, 1);
+    linB.at(1, 1) = 8;
+    linB.at(2, 1) = 11;
+    cout << Matrix<double>::solve(linA, linB).to_string() << endl;
 }
 
 #pragma clang diagnostic pop

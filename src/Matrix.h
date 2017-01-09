@@ -262,6 +262,10 @@ public:
         return inverted.transpose();
     }
 
+    static Matrix<T> solve(Matrix<T> a, Matrix<T> b) {
+        return a.inverse() * b;
+    }
+
     Matrix(Matrix&& rvalue) {
         _data = rvalue._data;
         _rows = rvalue._rows;
