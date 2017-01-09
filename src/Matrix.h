@@ -239,8 +239,34 @@ public:
         }
     }
 
+    Matrix<T> inverse() const {
+        T thisDet = det();
+        if (thisDet == 0) {
+            throw std::runtime_error("Cannot invert non-rectangular matrix");
+        }
+
+        Matrix<T> inverted = zeros(rows(), cols());
+
+        if (rows() == 1 && cols() == 1) {
+            Matrix<T> result = zeros(1, 1);
+            result.at(1, 1) = 1.0 / at(1, 1);
+            return result;
+        }
+
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                inverted.at(i, j) = ((((i + j) % 2 == 0) ? 1 : -1) * (*this).remove_intersection(i, j).det()) / thisDet;
+            }
+        }
+
+        return inverted.transpose();
+    }
+
     Matrix(Matrix&& rvalue) {
         _data = rvalue._data;
+        _rows = rvalue._rows;
+        _cols = rvalue._cols;
+        parent = rvalue.parent;
         rvalue._data = nullptr;
     }
 

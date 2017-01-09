@@ -131,6 +131,16 @@ int main() {
     Matrix<int> sample = Matrix<int>::natural(3, 3);
     cout << (sample.concat_horizontal(sample)).to_string() << endl;
     cout << (sample.concat_vertical(sample)).to_string() << endl;
+
+    header("Transposing matrices");
+    Matrix<int> x = Matrix<int>::natural(4, 4);
+    cout << x.to_string() << endl;
+    cout << x.transpose().to_string() << endl;
+
+    header("Inverting matrices");
+    Matrix<int> first = Matrix<int>::natural(2,2);
+    cout << first.to_string() << endl;
+    cout << first.inverse().to_string() << endl;
 }
 
 #pragma clang diagnostic pop

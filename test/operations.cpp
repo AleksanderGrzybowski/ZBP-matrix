@@ -222,3 +222,81 @@ TEST_CASE("Transposition: 3x3") {
     REQUIRE(transposed.at(2, 3) == 8);
     REQUIRE(transposed.at(3, 3) == 9);
 }
+
+TEST_CASE("Matrix inverse: identity matrices are their own inverses") {
+    Matrix<int> a = Matrix<int>::eye(1);
+    Matrix<int> b = Matrix<int>::eye(2);
+
+    REQUIRE(a.inverse() == a);
+    REQUIRE(b.inverse() == b);
+}
+
+TEST_CASE("Matrix inverse: 1x1") {
+    Matrix<double> a = Matrix<double>::zeros(1);
+    a.at(1, 1) = 5;
+
+    Matrix<double> inverse = a.inverse();
+
+    REQUIRE(inverse.cols() == 1);
+    REQUIRE(inverse.rows() == 1);
+    REQUIRE(inverse.at(1, 1) == Approx(0.2));
+}
+
+TEST_CASE("Matrix inverse: 2x2") {
+    Matrix<double> a = Matrix<double>::zeros(2, 2);
+    a.at(1, 1) = 1;
+    a.at(1, 2) = 2;
+    a.at(2, 1) = 3;
+    a.at(2, 2) = 4;
+
+    Matrix<double> inverse = a.inverse();
+
+    REQUIRE(inverse.cols() == 2);
+    REQUIRE(inverse.rows() == 2);
+    REQUIRE(inverse.at(1, 1) == Approx(-2));
+    REQUIRE(inverse.at(1, 2) == Approx(1));
+    REQUIRE(inverse.at(2, 1) == Approx(1.5));
+    REQUIRE(inverse.at(2, 2) == Approx(-0.5));
+}
+
+TEST_CASE("Matrix inverse: 3x3") {
+    Matrix<double> a = Matrix<double>::zeros(3, 3);
+    a.at(1, 1) = 1;
+    a.at(1, 2) = 3;
+    a.at(1, 3) = 2;
+    a.at(2, 1) = 1;
+    a.at(2, 2) = 2;
+    a.at(2, 3) = 3;
+    a.at(3, 1) = 3;
+    a.at(3, 2) = 2;
+    a.at(3, 3) = 1;
+
+    Matrix<double> inverse = a.inverse();
+
+    REQUIRE(inverse.cols() == 3);
+    REQUIRE(inverse.rows() == 3);
+    REQUIRE(inverse.at(1, 1) == Approx(-0.333).epsilon(0.01));
+    REQUIRE(inverse.at(1, 2) == Approx(0.0833).epsilon(0.01));
+    REQUIRE(inverse.at(1, 3) == Approx(0.4166).epsilon(0.01));
+    REQUIRE(inverse.at(2, 1) == Approx(0.6666).epsilon(0.01));
+    REQUIRE(inverse.at(2, 2) == Approx(-0.416).epsilon(0.01));
+    REQUIRE(inverse.at(2, 3) == Approx(-0.083).epsilon(0.01));
+    REQUIRE(inverse.at(3, 1) == Approx(-0.333).epsilon(0.01));
+    REQUIRE(inverse.at(3, 2) == Approx(0.5833).epsilon(0.01));
+    REQUIRE(inverse.at(3, 3) == Approx(-0.083).epsilon(0.01));
+}
+
+TEST_CASE("Should throw on non-rectangular matrix") {
+    REQUIRE_THROWS(Matrix<int>::zeros(1, 2).inverse());
+}
+
+TEST_CASE("Should throw if matrix is non-invertible (det=0)") {
+    Matrix<int> notInvertible = Matrix<int>::zeros(2);
+    notInvertible.at(1, 1) = 1;
+    notInvertible.at(1, 2) = 1;
+    notInvertible.at(2, 1) = 2;
+    notInvertible.at(2, 2) = 2;
+
+    REQUIRE_THROWS(notInvertible.inverse());
+}
+
