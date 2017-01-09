@@ -22,7 +22,7 @@ TEST_CASE("Operations: == and !=, matrices are equal when they have the same dim
     Matrix<int> a = Matrix<int>::eye(2);
     Matrix<int> b_equal = Matrix<int>::eye(2);
     Matrix<int> b_changed = Matrix<int>::eye(2);
-    b_changed.at(1,1) = 42;
+    b_changed.at(1, 1) = 42;
 
     REQUIRE(a == b_equal);
     REQUIRE(a != b_changed);
@@ -149,7 +149,7 @@ TEST_CASE("3x2 * 2x3") {
     REQUIRE(result.at(3, 3) == 51);
 }
 
-TEST_CASE("Irregular dimensions") {
+TEST_CASE("Multiplying irregular dimensions") {
     Matrix<int> a = Matrix<int>::natural(3, 2);
     Matrix<int> b = Matrix<int>::natural(2, 4);
 
@@ -170,4 +170,55 @@ TEST_CASE("Irregular dimensions") {
     REQUIRE(result.at(3, 4) == 68);
 }
 
+TEST_CASE("Transposition: 1x1") {
+    Matrix<int> a = Matrix<int>::eye(1);
 
+    Matrix<int> transposed = a.transpose();
+
+    REQUIRE(transposed.rows() == 1);
+    REQUIRE(transposed.cols() == 1);
+    REQUIRE(transposed.at(1, 1) == 1);
+}
+
+TEST_CASE("Transposition: 3x1") {
+    Matrix<int> a = Matrix<int>::natural(3, 1);
+
+    Matrix<int> transposed = a.transpose();
+
+    REQUIRE(transposed.rows() == 1);
+    REQUIRE(transposed.cols() == 3);
+    REQUIRE(transposed.at(1, 1) == 1);
+    REQUIRE(transposed.at(1, 2) == 2);
+    REQUIRE(transposed.at(1, 3) == 3);
+}
+
+TEST_CASE("Transposition: 1x3") {
+    Matrix<int> a = Matrix<int>::natural(1, 3);
+
+    Matrix<int> transposed = a.transpose();
+
+    REQUIRE(transposed.rows() == 3);
+    REQUIRE(transposed.cols() == 1);
+    REQUIRE(transposed.at(1, 1) == 1);
+    REQUIRE(transposed.at(2, 1) == 2);
+    REQUIRE(transposed.at(3, 1) == 3);
+}
+
+TEST_CASE("Transposition: 3x3") {
+    Matrix<int> a = Matrix<int>::natural(3, 3);
+
+    Matrix<int> transposed = a.transpose();
+
+    REQUIRE(transposed.rows() == 3);
+    REQUIRE(transposed.cols() == 3);
+
+    REQUIRE(transposed.at(1, 1) == 1);
+    REQUIRE(transposed.at(2, 1) == 2);
+    REQUIRE(transposed.at(3, 1) == 3);
+    REQUIRE(transposed.at(1, 2) == 4);
+    REQUIRE(transposed.at(2, 2) == 5);
+    REQUIRE(transposed.at(3, 2) == 6);
+    REQUIRE(transposed.at(1, 3) == 7);
+    REQUIRE(transposed.at(2, 3) == 8);
+    REQUIRE(transposed.at(3, 3) == 9);
+}

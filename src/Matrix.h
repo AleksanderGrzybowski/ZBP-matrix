@@ -78,6 +78,17 @@ public:
         return cloned;
     }
 
+    Matrix<T> transpose() const {
+        Matrix<T> transposed = zeros(cols(), rows());
+        for (int i = 1; i <= rows(); ++i) {
+            for (int j = 1; j <= cols(); ++j) {
+                transposed.at(j, i) = at(i, j);
+            }
+        }
+
+        return transposed;
+    }
+
     Matrix<T> view(int from_row, int from_col, int to_row, int to_col) {
         bool min_check = from_row >= 1 && to_row >= 1 && from_col >= 1 && to_col >= 1;
         bool max_check = from_row <= rows() && to_row <= rows() && from_col <= cols() && to_col <= cols();
