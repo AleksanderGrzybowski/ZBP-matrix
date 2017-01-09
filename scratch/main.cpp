@@ -1,6 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnusedImportStatement"
-
 #include <iostream>
 #include "../src/Matrix.h"
 
@@ -153,5 +150,3 @@ int main() {
     linB.at(2, 1) = 11;
     cout << Matrix<double>::solve(linA, linB).to_string() << endl;
 }
-
-#pragma clang diagnostic pop

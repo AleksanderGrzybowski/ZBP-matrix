@@ -11,16 +11,23 @@ template<class T>
 class Matrix {
 public:
 
+    /**
+     * Returns number of rows (view-aware)
+     */
     int rows() const {
         return parent != nullptr ? (to_row - from_row + 1) : _rows;
     }
 
+    /**
+     * Returns number of columns (view-aware)
+     */
     int cols() const {
         return parent != nullptr ? (to_col - from_col + 1) : _cols;
     }
 
-    // this method allows us to transparently access data both from real array-backed matrices
-    // as well as views (it recalculates coordinates if needed)
+    /**
+     * Gets element at the specific coordinates (view-aware).
+     */
     T& at(int row, int col) const {
         if (row <= 0 || col <= 0) {
             throw std::runtime_error("Invalid element access");
@@ -36,6 +43,9 @@ public:
         }
     }
 
+    /**
+     * Creates MxN matrix filled with zeros.
+     */
     static Matrix<T> zeros(int rows, int cols) {
         if (!(rows > 0 && cols > 0)) {
             throw std::runtime_error("Cannot create matrix with nonpositive dimensions");
@@ -44,10 +54,16 @@ public:
         return Matrix<T>(rows, cols);
     }
 
+    /**
+     * Creates MxM matrix filled with zeros.
+     */
     static Matrix<T> zeros(int size) {
         return zeros(size, size);
     }
 
+    /**
+     * Creates MxM identity matrix (1-s on diagonal and 0-s elsewhere)
+     */
     static Matrix<int> eye(int size) {
         Matrix<T> identity = zeros(size);
         for (int i = 1; i <= size; ++i) {
@@ -56,7 +72,10 @@ public:
         return identity;
     }
 
-    // primarily for testing, but useful anyway - matrix with elements from 1 to MxN
+    /**
+     * Creates MxN matrix filled with natural numbers increasing.
+     * Used mainly for testing and visualisation.
+     */
     static Matrix<int> natural(int rows, int cols) {
         Matrix<T> nat = zeros(rows, cols);
 
@@ -68,6 +87,9 @@ public:
         return nat;
     }
 
+    /**
+     * Clones matrix and copies all internal data structures to a new matrix.
+     */
     Matrix<T> clone() const {
         Matrix<T> cloned = zeros(rows(), cols());
         for (int i = 1; i <= rows(); ++i) {
@@ -78,6 +100,9 @@ public:
         return cloned;
     }
 
+    /**
+     * Returns transposed matrix, that is, matrix with every element (i,j) moved to (j,i).
+     */
     Matrix<T> transpose() const {
         Matrix<T> transposed = zeros(cols(), rows());
         for (int i = 1; i <= rows(); ++i) {
@@ -89,6 +114,12 @@ public:
         return transposed;
     }
 
+    /**
+     * Returns a view (sub-matrix) of specified coordinates. Any mutations made to the view
+     * will propagate down to base matrix with all necessary reindexing and bound checking.
+     * Destructing view will not do any harm to base matrix.
+     * If unsure, clone the result to avoid confusion.
+     */
     Matrix<T> view(int from_row, int from_col, int to_row, int to_col) {
         bool min_check = from_row >= 1 && to_row >= 1 && from_col >= 1 && to_col >= 1;
         bool max_check = from_row <= rows() && to_row <= rows() && from_col <= cols() && to_col <= cols();
@@ -100,6 +131,10 @@ public:
         return Matrix(*this, from_row, from_col, to_row, to_col);
     }
 
+    /**
+     * Pastes the content of source matrix into destination matrix at the provided coordinates, replacing
+     * existing elements.
+     */
     void put(const Matrix& source, int row, int col) {
         bool size_check = row >= 1 && row <= rows() && col >= 1 && col <= cols();
         bool bounds_check = (row + source.rows() - 1 <= rows()) && (col + source.cols() - 1 <= cols());
@@ -114,6 +149,9 @@ public:
         }
     }
 
+    /**
+     * Joins two matrices together horizontally. Make sure that the number of rows is the same on both matrices.
+     */
     Matrix concat_horizontal(const Matrix& right) {
         if (rows() != right.rows()) {
             throw std::runtime_error("Cannot concat matrices, nonmatching dimensions");
@@ -126,6 +164,9 @@ public:
         return result;
     }
 
+    /**
+     * Joins two matrices together verically. Make sure that the number of cols is the same on both matrices.
+     */
     Matrix concat_vertical(const Matrix& bottom) {
         if (cols() != bottom.cols()) {
             throw std::runtime_error("Cannot concat matrices, nonmatching dimensions");
@@ -138,6 +179,9 @@ public:
         return result;
     }
 
+    /**
+     * Adds matrices (mutating).
+     */
     Matrix<T>& operator+=(const Matrix& other) {
         if (!(other.rows() == rows() && other.cols() == cols())) {
             throw std::runtime_error("Incompatible dimensions");
@@ -152,12 +196,18 @@ public:
         return *this;
     }
 
+    /**
+     * Adds matrices (non-mutating).
+     */
     Matrix<T> operator+(const Matrix& other) const {
         Matrix<int> result = *this;
         result += other;
         return result;
     }
 
+    /**
+     * Multiplies matrices (mutating).
+     */
     Matrix<T>& operator*=(T factor) {
         for (int i = 1; i <= rows(); ++i) {
             for (int j = 1; j <= cols(); ++j) {
@@ -168,16 +218,25 @@ public:
         return *this;
     }
 
+    /**
+     * Multiplies matrices by a factor (non-mutating).
+     */
     Matrix<T> operator*(T factor) const {
         Matrix<int> result = *this;
         result *= factor;
         return result;
     }
 
+    /**
+     * Subtracts matrices (non-mutating).
+     */
     Matrix<T> operator-(const Matrix& other) const {
         return (*this + (other * (-1)));
     }
 
+    /**
+     * Subtracts matrices (mutating).
+     */
     Matrix<T>& operator-=(const Matrix& other) {
         *this += other * (-1);
         return *this;
@@ -186,6 +245,10 @@ public:
     // this method returns a new matrix with with some row and col removed
     // should be in fact private, because this is just an implementation detail of det(),
     // but complex enough to require testing
+    /**
+     * Removes the specified row and column from the matrix. All existing elements will be shifted
+     * to accomodate new empty space. This method is an implementation detail of .det and .inverse
+     */
     Matrix remove_intersection(int row, int col) const {
         if (!(row >= 1 && row <= rows() && col >= 1 && col <= cols())) {
             throw std::runtime_error("Nonexistent center element to remove intersection");
@@ -195,7 +258,6 @@ public:
             throw std::runtime_error("Cannot remove intersection from 1x1 matrix");
         }
 
-        // TODO: try to refactor this using views :)
         Matrix<T> result = Matrix<T>::zeros(cols() - 1, rows() - 1);
         for (int i = 1; i <= rows() - 1; ++i) {
             for (int j = 1; j <= cols() - 1; ++j) {
@@ -206,7 +268,9 @@ public:
         return result;
     }
 
-    // regular old-school multiplication
+    /**
+     * Matrix multiplication (non-mutating).
+     */
     Matrix<T> operator*(Matrix<T>& second) {
         if (cols() != second.rows()) {
             throw std::runtime_error("Cannot multiply, invalid dimensions");
@@ -223,6 +287,9 @@ public:
         return result;
     }
 
+    /**
+     * Calculates matrix determinant.
+     */
     T det() const {
         if (rows() != cols()) {
             throw std::runtime_error("Cannot calculate determinant of non-square matrix");
@@ -239,6 +306,9 @@ public:
         }
     }
 
+    /**
+     * Calculates matrix inverse, if exists.
+     */
     Matrix<T> inverse() const {
         T thisDet = det();
         if (thisDet == 0) {
@@ -262,6 +332,9 @@ public:
         return inverted.transpose();
     }
 
+    /**
+     * Solves a system of linear equations Ax=B.
+     */
     static Matrix<T> solve(Matrix<T> a, Matrix<T> b) {
         return a.inverse() * b;
     }
@@ -394,6 +467,9 @@ private:
             : from_row(from_row), from_col(from_col), to_row(to_row), to_col(to_col), parent(&parent) {}
 
 
+    /**
+     * Calculates dot product of two vectors (1xM / Mx1).
+     */
     T dot_product(const Matrix<T>& second) const {
         matrix_iterator it_first = begin();
         matrix_iterator it_second = second.begin();
